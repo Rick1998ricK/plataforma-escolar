@@ -15,6 +15,13 @@
       "when": 1791259369539,
       "tag": "0001_wealthy_cobalt_man",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791259892872,
+      "tag": "0002_hook_token_acceso",
+      "breakpoints": true
     }
   ]
 }
