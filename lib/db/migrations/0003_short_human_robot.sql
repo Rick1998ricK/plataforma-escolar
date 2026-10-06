@@ -1,0 +1,4 @@
+CREATE POLICY "colegios_ver_el_propio" ON "colegios" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("colegios"."id" = ((select auth.jwt()) ->> 'colegio_id')::uuid);--> statement-breakpoint
+CREATE POLICY "roles_ver_de_mi_colegio" ON "roles" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("roles"."colegio_id" = ((select auth.jwt()) ->> 'colegio_id')::uuid);--> statement-breakpoint
+CREATE POLICY "usuario_roles_ver_de_mi_colegio" ON "usuario_roles" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("usuario_roles"."colegio_id" = ((select auth.jwt()) ->> 'colegio_id')::uuid);--> statement-breakpoint
+CREATE POLICY "usuarios_ver_de_mi_colegio" ON "usuarios" AS PERMISSIVE FOR SELECT TO "authenticated" USING ("usuarios"."colegio_id" = ((select auth.jwt()) ->> 'colegio_id')::uuid);
