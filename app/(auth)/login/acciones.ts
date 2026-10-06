@@ -16,3 +16,9 @@ export async function iniciarSesion(datos: FormData) {
   if (error) redirect("/login?error=1");
   redirect("/panel");
 }
+
+export async function cerrarSesion() {
+  const supabase = await crearClienteServidor();
+  await supabase.auth.signOut();
+  redirect("/login");
+}

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { crearClienteServidor } from "@/lib/supabase/servidor";
+import { cerrarSesion } from "@/app/(auth)/login/acciones";
 
 export default async function PaginaPanel() {
   const supabase = await crearClienteServidor();
@@ -16,7 +17,14 @@ export default async function PaginaPanel() {
 
   return (
     <main className="mx-auto max-w-xl space-y-4 p-8">
-      <h1 className="text-2xl font-semibold">Panel</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-semibold">Panel</h1>
+        <form action={cerrarSesion}>
+            <button type="submit" className="rounded border px-3 py-1 text-sm">
+            Cerrar sesión
+            </button>
+        </form>
+        </div>
 
       <section className="rounded border p-4 text-sm">
         <h2 className="mb-2 font-medium">Lo que dice tu pulsera</h2>
