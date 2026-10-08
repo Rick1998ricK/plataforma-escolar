@@ -1,0 +1,444 @@
+{
+  "id": "d72a1aa2-1193-47c4-adbb-e529a030ae09",
+  "prevId": "2e5b46ce-1bab-42c8-8cd4-5f5c7e569f8b",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.colegios": {
+      "name": "colegios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "subdominio": {
+          "name": "subdominio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "logo_url": {
+          "name": "logo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "creado_en": {
+          "name": "creado_en",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "actualizado_en": {
+          "name": "actualizado_en",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "colegios_subdominio_unique": {
+          "name": "colegios_subdominio_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "subdominio"
+          ]
+        }
+      },
+      "policies": {
+        "colegios_ver_el_propio": {
+          "name": "colegios_ver_el_propio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"colegios\".\"id\" = ((select auth.jwt()) ->> 'colegio_id')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.rol_permisos": {
+      "name": "rol_permisos",
+      "schema": "",
+      "columns": {
+        "rol_id": {
+          "name": "rol_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "permiso": {
+          "name": "permiso",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "colegio_id": {
+          "name": "colegio_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "rol_permisos_rol_id_roles_id_fk": {
+          "name": "rol_permisos_rol_id_roles_id_fk",
+          "tableFrom": "rol_permisos",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "rol_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "rol_permisos_colegio_id_colegios_id_fk": {
+          "name": "rol_permisos_colegio_id_colegios_id_fk",
+          "tableFrom": "rol_permisos",
+          "tableTo": "colegios",
+          "columnsFrom": [
+            "colegio_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "rol_permisos_rol_id_permiso_pk": {
+          "name": "rol_permisos_rol_id_permiso_pk",
+          "columns": [
+            "rol_id",
+            "permiso"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "rol_permisos_ver_de_mi_colegio": {
+          "name": "rol_permisos_ver_de_mi_colegio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"rol_permisos\".\"colegio_id\" = ((select auth.jwt()) ->> 'colegio_id')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.roles": {
+      "name": "roles",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "colegio_id": {
+          "name": "colegio_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nombre": {
+          "name": "nombre",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "descripcion": {
+          "name": "descripcion",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "creado_en": {
+          "name": "creado_en",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "roles_colegio_id_colegios_id_fk": {
+          "name": "roles_colegio_id_colegios_id_fk",
+          "tableFrom": "roles",
+          "tableTo": "colegios",
+          "columnsFrom": [
+            "colegio_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "roles_colegio_nombre_unico": {
+          "name": "roles_colegio_nombre_unico",
+          "nullsNotDistinct": false,
+          "columns": [
+            "colegio_id",
+            "nombre"
+          ]
+        }
+      },
+      "policies": {
+        "roles_ver_de_mi_colegio": {
+          "name": "roles_ver_de_mi_colegio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"roles\".\"colegio_id\" = ((select auth.jwt()) ->> 'colegio_id')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.usuario_roles": {
+      "name": "usuario_roles",
+      "schema": "",
+      "columns": {
+        "usuario_id": {
+          "name": "usuario_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "rol_id": {
+          "name": "rol_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "colegio_id": {
+          "name": "colegio_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "usuario_roles_usuario_id_usuarios_id_fk": {
+          "name": "usuario_roles_usuario_id_usuarios_id_fk",
+          "tableFrom": "usuario_roles",
+          "tableTo": "usuarios",
+          "columnsFrom": [
+            "usuario_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "usuario_roles_rol_id_roles_id_fk": {
+          "name": "usuario_roles_rol_id_roles_id_fk",
+          "tableFrom": "usuario_roles",
+          "tableTo": "roles",
+          "columnsFrom": [
+            "rol_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "usuario_roles_colegio_id_colegios_id_fk": {
+          "name": "usuario_roles_colegio_id_colegios_id_fk",
+          "tableFrom": "usuario_roles",
+          "tableTo": "colegios",
+          "columnsFrom": [
+            "colegio_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "usuario_roles_usuario_id_rol_id_pk": {
+          "name": "usuario_roles_usuario_id_rol_id_pk",
+          "columns": [
+            "usuario_id",
+            "rol_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {
+        "usuario_roles_ver_de_mi_colegio": {
+          "name": "usuario_roles_ver_de_mi_colegio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"usuario_roles\".\"colegio_id\" = ((select auth.jwt()) ->> 'colegio_id')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.usuarios": {
+      "name": "usuarios",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "auth_id": {
+          "name": "auth_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "colegio_id": {
+          "name": "colegio_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nombres": {
+          "name": "nombres",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "apellidos": {
+          "name": "apellidos",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "activo": {
+          "name": "activo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "creado_en": {
+          "name": "creado_en",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "usuarios_auth_id_users_id_fk": {
+          "name": "usuarios_auth_id_users_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "users",
+          "schemaTo": "auth",
+          "columnsFrom": [
+            "auth_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "usuarios_colegio_id_colegios_id_fk": {
+          "name": "usuarios_colegio_id_colegios_id_fk",
+          "tableFrom": "usuarios",
+          "tableTo": "colegios",
+          "columnsFrom": [
+            "colegio_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "usuarios_auth_colegio_unico": {
+          "name": "usuarios_auth_colegio_unico",
+          "nullsNotDistinct": false,
+          "columns": [
+            "auth_id",
+            "colegio_id"
+          ]
+        }
+      },
+      "policies": {
+        "usuarios_ver_de_mi_colegio": {
+          "name": "usuarios_ver_de_mi_colegio",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "authenticated"
+          ],
+          "using": "\"usuarios\".\"colegio_id\" = ((select auth.jwt()) ->> 'colegio_id')::uuid"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

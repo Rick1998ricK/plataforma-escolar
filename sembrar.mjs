@@ -1,5 +1,6 @@
 import { config } from "dotenv";
 import postgres from "postgres";
+import { PERMISOS } from "./lib/auth/permisos.ts";
 
 config({ path: ".env.local" });
 
@@ -36,6 +37,13 @@ try {
       insert into usuario_roles (usuario_id, rol_id, colegio_id)
       values (${usuario.id}, ${rol.id}, ${colegio.id})
       on conflict do nothing`;
+
+          for (const permiso of Object.keys(PERMISOS)) {
+      await tx`
+        insert into rol_permisos (rol_id, permiso, colegio_id)
+        values (${rol.id}, ${permiso}, ${colegio.id})
+        on conflict do nothing`;
+    }
 
     console.log("Datos de prueba creados:", { colegio: colegio.id, usuario: usuario.id, rol: rol.id });
   });

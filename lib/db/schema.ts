@@ -85,3 +85,21 @@ export const usuario_roles = pgTable(
     }),
   ],
 ).enableRLS();
+
+// Que acciones puede hacer cada rol
+export const rol_permisos = pgTable(
+  "rol_permisos",
+  {
+    rol_id: uuid("rol_id").notNull().references(() => roles.id, { onDelete: "cascade" }),
+    permiso: text("permiso").notNull(),
+    colegio_id: uuid("colegio_id").notNull().references(() => colegios.id),
+  },
+  (tabla) => [
+    primaryKey({ columns: [tabla.rol_id, tabla.permiso] }),
+    pgPolicy("rol_permisos_ver_de_mi_colegio", {
+      for: "select",
+      to: authenticatedRole,
+      using: sql`${tabla.colegio_id} = ${colegioDelToken}`,
+    }),
+  ],
+).enableRLS();
