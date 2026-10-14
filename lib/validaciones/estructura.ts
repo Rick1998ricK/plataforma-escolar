@@ -23,3 +23,27 @@ export type EstadoFormulario = {
 };
 
 export const ESTADO_FORMULARIO_INICIAL: EstadoFormulario = { ok: false, mensaje: null, errores: {}, valores: {} };
+
+export const esquemaEtapa = z.object({
+  periodo_id: z.uuid(),
+  nombre: z.string().trim().min(1, "Escribe un nombre, por ejemplo Primaria").max(40, "Máximo 40 caracteres"),
+  modalidad: z.enum(["ebr", "eba"], "Elige la modalidad"),
+});
+
+export const esquemaGrado = z.object({
+  etapa_id: z.uuid(),
+  nombre: z.string().trim().min(1, "Escribe un nombre, por ejemplo 1.er grado").max(40, "Máximo 40 caracteres"),
+});
+
+export const esquemaSeccion = z.object({
+  grado_id: z.uuid(),
+  nombre: z.string().trim().min(1, "Escribe una letra o nombre").max(15, "Máximo 15 caracteres"),
+  vacantes: z.coerce
+    .number("Escribe un número")
+    .int("Debe ser un número entero")
+    .min(0, "No puede ser negativo")
+    .max(200, "Máximo 200"),
+});
+
+export const NIVELES = ["periodo", "etapa", "grado", "seccion"] as const;
+export type Nivel = (typeof NIVELES)[number];
