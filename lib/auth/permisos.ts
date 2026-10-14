@@ -11,6 +11,7 @@ export const PERMISOS = {
   "notas.registrar": "Registrar notas de sus cursos asignados",
   "notas.reabrir_periodo": "Reabrir un periodo de evaluación cerrado",
   "reportes.ver": "Ver reportes gerenciales",
+  "asistencia.registrar": "Registrar asistencia",
 } as const;
 
 export type Permiso = keyof typeof PERMISOS;

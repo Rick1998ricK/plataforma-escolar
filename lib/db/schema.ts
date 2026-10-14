@@ -14,6 +14,7 @@ export const colegios = pgTable(
     nombre: text("nombre").notNull(),
     subdominio: text("subdominio").notNull().unique(),
     logo_url: text("logo_url"),
+    color_primario: text("color_primario"),
     activo: boolean("activo").notNull().default(true),
     creado_en: timestamp("creado_en", { withTimezone: true }).notNull().defaultNow(),
     actualizado_en: timestamp("actualizado_en", { withTimezone: true }).notNull().defaultNow(),

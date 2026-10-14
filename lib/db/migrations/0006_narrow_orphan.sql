@@ -1,0 +1,1 @@
+ALTER TABLE "colegios" ADD COLUMN "color_primario" text;

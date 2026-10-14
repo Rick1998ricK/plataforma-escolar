@@ -27,6 +27,7 @@ export async function obtenerColegioActual() {
       nombre: colegios.nombre,
       subdominio: colegios.subdominio,
       logo_url: colegios.logo_url,
+      color_primario: colegios.color_primario,
     })
     .from(colegios)
     .where(and(eq(colegios.subdominio, subdominio), eq(colegios.activo, true)))
