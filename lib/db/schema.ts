@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, date, foreignKey, integer, pgEnum, pgPolicy, pgTable, primaryKey, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
+import { boolean, check, uniqueIndex, date, foreignKey, integer, pgEnum, pgPolicy, pgTable, primaryKey, text, timestamp, unique, uuid } from "drizzle-orm/pg-core";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { authenticatedRole, authUsers } from "drizzle-orm/supabase";
 
@@ -135,6 +135,7 @@ export const periodos_academicos = pgTable(
     unique("periodos_colegio_nombre_unico").on(tabla.colegio_id, tabla.nombre),
     unique("periodos_id_colegio_unico").on(tabla.id, tabla.colegio_id),
     check("periodos_fechas_validas", sql`${tabla.fecha_fin} > ${tabla.fecha_inicio}`),
+    uniqueIndex("periodos_un_solo_activo").on(tabla.colegio_id).where(sql`${tabla.estado} = 'activo'`),
     verDeMiColegio("periodos_ver_de_mi_colegio", tabla.colegio_id),
   ],
 ).enableRLS();

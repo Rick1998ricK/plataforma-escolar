@@ -52,3 +52,11 @@ export async function exigirPermiso(permiso: Permiso) {
   if (!(await tienePermiso(permiso))) redirect("/panel");
   return sesion;
 }
+
+// Para acciones de servidor: no redirige, solo devuelve null si no puede.
+// (Un redirect dentro de una accion pierde el subdominio, como vimos en el login.)
+export async function sesionConPermiso(permiso: Permiso) {
+  const sesion = await obtenerSesion();
+  if (!sesion || !(await tienePermiso(permiso))) return null;
+  return sesion;
+}

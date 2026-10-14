@@ -7,3 +7,9 @@ export function obtenerIniciales(texto: string) {
     .join("")
     .toUpperCase();
 }
+
+export function formatearFecha(fecha: string) {
+  return new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(
+    new Date(`${fecha}T00:00:00Z`),
+  );
+}

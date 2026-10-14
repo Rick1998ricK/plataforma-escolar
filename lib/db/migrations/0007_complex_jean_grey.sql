@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "periodos_un_solo_activo" ON "periodos_academicos" USING btree ("colegio_id") WHERE "periodos_academicos"."estado" = 'activo';
